@@ -22,4 +22,4 @@
 * Nukkit / PowerNukkit 的 PingTag 插件
 
 ## 貢獻者
-* whes1015 - 插件製作
+* whes1015 - 插件開發
