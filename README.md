@@ -19,7 +19,7 @@
 </p>
 
 ## 項目概要
-* 這是一個模板
+* Nukkit/PowerNukkit 的 PingTag 插件
 
 ## 貢獻者
 * whes1015 - 編輯模板
