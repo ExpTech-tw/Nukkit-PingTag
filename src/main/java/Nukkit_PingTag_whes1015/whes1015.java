@@ -17,8 +17,8 @@ import java.net.URL;
 public class whes1015 extends PluginBase implements Listener {
 
     private static whes1015 plugin;
-    int vercode=300;
-    String vername="V 3.0.0-stable";
+    int vercode=305;
+    String vername="V 3.0.5-stable";
 
     @Override
     public void onEnable() {
