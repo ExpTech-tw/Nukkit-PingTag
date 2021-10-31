@@ -6,63 +6,52 @@ import cn.nukkit.event.player.PlayerMoveEvent;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.LoginChainData;
 import cn.nukkit.utils.TextFormat;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class whes1015 extends PluginBase implements Listener {
 
-    private static whes1015 plugin;
-    int vercode=305;
-    String vername="V 3.0.5-stable";
+    String vername="3.0.6-stable";
 
     @Override
     public void onEnable() {
+        String webPage = "https://api.github.com/repos/ExpTechTW/Nukkit-PingTag/releases";
 
-        URL url = null;
+        InputStream is = null;
         try {
-            url = new URL("http://exptech.mywire.org/Nukkit_PingTag.php");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpURLConnection http = null;
-        try {
-            assert url != null;
-            http = (HttpURLConnection) url.openConnection();
+            is = new URL(webPage).openStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            assert http != null;
-            http.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        try {
-            InputStream input = http.getInputStream();
-            byte[] data = new byte[1024];
-            int idx = input.read(data);
-            String str = new String(data, 0, idx);
-            int x = Integer.parseInt(str);
-            if(vercode < x) {
-                this.getLogger().error(TextFormat.RED + "Please Update Your Plugin! "+vername);
-                this.getLogger().info(TextFormat.RED + "DownloadLink: https://github.com/ExpTech-tw/Nukkit-PingTag/tags");
+        Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+        JsonElement jsonElement = new JsonParser().parse(reader);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+        JsonObject jsonObject = (JsonObject) jsonArray.get(0);
+        saveDefaultConfig();
+        if (jsonObject.get("tag_name").toString() != vername) {
+            if ((getConfig().getString("BetaVersion") == "true" && jsonObject.get("prerelease").getAsBoolean() == true) || (getConfig().getString("BetaVersion") == "false" && jsonObject.get("prerelease").getAsBoolean() == false)) {
+                this.getLogger().warning(TextFormat.RED + "Please Update Your Plugin ! " + vername);
+                this.getLogger().info(TextFormat.RED + "DownloadLink: https://github.com/ExpTechTW/Nukkit-PingTag/releases");
                 this.getPluginLoader().disablePlugin(this);
-            }else{
-                this.getLogger().info(TextFormat.BLUE + "Nukkit_PingTag Update Checking Success! "+vername);
-                this.getLogger().info(TextFormat.BLUE + "Nukkit_PingTag Loading Success! - Designed by ExpTech.tw (whes1015) "+vername);
+            } else {
+                this.getLogger().info(TextFormat.BLUE + "Nukkit-Engineer Update Checking Success! " + vername);
+                this.getLogger().info(TextFormat.BLUE + "Nukkit-Engineer Loading! - Designed by ExpTech.tw (whes1015) " + vername);
                 this.getServer().getPluginManager().registerEvents(this, this);
             }
-            input.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            this.getLogger().info(TextFormat.BLUE + "Nukkit-Engineer Update Checking Success! " + vername);
+            this.getLogger().info(TextFormat.BLUE + "Nukkit-Engineer Loading! - Designed by ExpTech.tw (whes1015) " + vername);
+            this.getServer().getPluginManager().registerEvents(this, this);
         }
-        http.disconnect();
-
     }
 
     @EventHandler
@@ -71,13 +60,10 @@ public class whes1015 extends PluginBase implements Listener {
         String OS;
         LoginChainData os=event.getPlayer().getLoginChainData();
         if(os.getDeviceOS() == 1){
-
             OS="Android";
         }else if(os.getDeviceOS() == 2){
-
             OS="iOS";
         }else{
-
             OS="Windows";
         }
         if (event.getPlayer().getPing()>300) {
@@ -85,7 +71,6 @@ public class whes1015 extends PluginBase implements Listener {
         }else if(event.getPlayer().getPing()>100) {
             event.getPlayer().setNameTag(event.getPlayer().getName() + "\n" +TextFormat.BLUE +OS+" "+ TextFormat.YELLOW +ping);
         }else{
-
             event.getPlayer().setNameTag(event.getPlayer().getName() + "\n" +TextFormat.BLUE +OS+" "+ TextFormat.GREEN +ping);
         }
     }
