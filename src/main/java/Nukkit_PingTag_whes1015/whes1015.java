@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 public class whes1015 extends PluginBase implements Listener {
 
-    String vername="3.0.6-stable";
+    String vername="21w46";
 
     @Override
     public void onEnable() {
